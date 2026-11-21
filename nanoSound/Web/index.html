@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <title>Sound Groups</title>
+  <style>
+    :root { color-scheme:light; --ink:#17232c; --muted:#5e6c76; --canvas:#e7edf1; --surface:#fbfcfd; --primary:#1769a5; --primary-dark:#0f507f; --teal:#187568; --teal-dark:#10594f; --amber:#d39a2c; --danger:#a7353f; --line:#c7d0d6; --white:#fff; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:linear-gradient(135deg,#dce5ea,#eef2f4); font-family:"Trebuchet MS",Tahoma,sans-serif; min-height:100vh; }
+    header { background:#17303f; color:var(--white); border-bottom:4px solid var(--amber); padding:18px max(18px,calc((100% - 1120px)/2)); }
+    h1 { margin:0; font-size:32px; letter-spacing:0; }
+    header p { margin:4px 0 0; color:#d5e0e6; }
+    main { max-width:1120px; min-height:calc(100vh - 91px); margin:auto; padding:22px; background:var(--surface); box-shadow:0 12px 35px rgba(23,48,63,.12); }
+    .toolbar { display:grid; grid-template-columns:minmax(220px,1fr) auto auto auto; gap:10px; align-items:end; padding-bottom:18px; border-bottom:1px solid var(--line); }
+    .network-settings { display:grid; grid-template-columns:repeat(2,minmax(180px,1fr)); gap:12px; align-items:end; padding:18px 0; border-bottom:1px solid var(--line); }
+    .config-settings { display:flex; gap:12px; padding:20px 0; border-bottom:1px solid var(--line); }
+    .config-settings input { display:none; }
+    label { display:block; color:#33434e; font-size:13px; font-weight:700; }
+    input[type=text],input[type=password],input[type=number] { width:100%; min-width:0; height:40px; margin-top:6px; border:1px solid #9cabb4; border-radius:4px; background:var(--white); padding:8px 10px; color:var(--ink); font:15px "Trebuchet MS",Tahoma,sans-serif; }
+    input:focus { border-color:var(--primary); outline:2px solid rgba(23,105,165,.16); outline-offset:0; }
+    input[type=range] { width:100%; margin-top:10px; accent-color:var(--primary); }
+    input[type=checkbox] { width:19px; height:19px; accent-color:var(--teal); }
+    button { min-height:40px; border:1px solid var(--primary-dark); border-radius:4px; background:var(--primary); color:var(--white); padding:9px 14px; font:700 14px "Trebuchet MS",Tahoma,sans-serif; cursor:pointer; }
+    button:hover { background:var(--primary-dark); }
+    button:active { transform:translateY(1px); }
+    button:disabled { cursor:wait; opacity:.58; }
+    button.secondary { background:var(--teal); border-color:var(--teal-dark); }
+    button.secondary:hover { background:var(--teal-dark); }
+    button.danger { background:var(--white); border-color:#cf9da2; color:var(--danger); }
+    button.danger:hover { background:#fff1f2; }
+    .status { min-height:32px; padding:12px 0 0; color:var(--teal); font-weight:700; }
+    .group { padding:22px 0; border-bottom:1px solid var(--line); }
+    .group:last-child { border-bottom:0; }
+    .group-head { display:grid; grid-template-columns:minmax(200px,2fr) auto minmax(110px,1fr) minmax(110px,1fr); gap:12px; align-items:end; }
+    .check { display:flex; align-items:center; gap:8px; min-height:40px; white-space:nowrap; }
+    .check input { margin:0; }
+    .tracks { margin-top:16px; border-top:3px solid var(--amber); }
+    .track { display:grid; grid-template-columns:42px minmax(180px,2fr) minmax(170px,1.3fr) auto; gap:10px; align-items:end; padding:11px 0; border-bottom:1px solid #d8dfe3; }
+    .number { align-self:center; color:var(--muted); font-weight:700; text-align:center; }
+    .play { width:40px; padding:0; font-size:18px; background:var(--teal); border-color:var(--teal-dark); }
+    .empty { padding:35px 0; text-align:center; color:var(--muted); }
+    .bottom-actions { display:flex; justify-content:flex-end; padding-top:22px; border-top:1px solid var(--line); }
+    .bottom-actions button { min-width:150px; }
+    output { color:var(--primary); font-size:18px; margin-left:6px; }
+    @media(max-width:800px) { .group-head{grid-template-columns:1fr 1fr}.group-name{grid-column:1/-1}.track{grid-template-columns:32px 1fr auto}.track .schedule{grid-column:2/-1}.toolbar{grid-template-columns:1fr 1fr 1fr}.volume{grid-column:1/-1}.network-settings{grid-template-columns:1fr 1fr} }
+    @media(max-width:470px) { main{padding:16px}.group-head{grid-template-columns:1fr}.group-name{grid-column:auto}.track{grid-template-columns:30px 1fr auto}.toolbar,.network-settings{grid-template-columns:1fr}.volume{grid-column:auto}.config-settings{flex-direction:column}.bottom-actions button{width:100%} }
+  </style>
+</head>
+<body>
+  <header><h1 id="title">Sound groups</h1><p id="subtitle">Discovered player library</p></header>
+  <main>
+    <div class="toolbar">
+      <label class="volume"><span id="volumeLabel">Volume</span><output id="volumeValue">15</output><input id="volume" type="range" min="0" max="30"></label>
+      <button class="save-all" onclick="saveAll()">Save all</button>
+      <button id="syncButton" class="secondary" onclick="syncTime()">Sync clock</button>
+      <button id="resetButton" class="danger" onclick="resetAll()">Reset all</button>
+    </div>
+    <div class="network-settings">
+      <label><span id="ssidLabel">Access point name</span><input id="ssid" type="text" maxlength="32"></label>
+      <label><span id="passwordLabel">New password (blank keeps current)</span><input id="password" type="password" minlength="8" maxlength="63" autocomplete="new-password"></label>
+    </div>
+    <div class="config-settings">
+      <button id="downloadButton" class="secondary" onclick="downloadConfiguration()">Download config</button>
+      <button id="uploadButton" class="secondary" onclick="document.getElementById('configFile').click()">Upload config</button>
+      <input id="configFile" type="file" accept=".txt,text/plain" onchange="uploadConfiguration(this)">
+    </div>
+    <div id="status" class="status"></div>
+    <div id="catalog"></div>
+    <div class="bottom-actions"><button class="save-all" onclick="saveAll()">Save all</button></div>
+  </main>
+  <script src="app.js"></script>
+  <script src="config.js"></script>
+</body>
+</html>

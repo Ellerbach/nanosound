@@ -1,0 +1,16 @@
+{
+  "Files": [
+    {
+      "SourceFilePath": "Web/index.html",
+      "DestinationFilePath": "I:\\Web\\index.html"
+    },
+    {
+      "SourceFilePath": "Web/app.js",
+      "DestinationFilePath": "I:\\Web\\app.js"
+    },
+    {
+      "SourceFilePath": "Web/config.js",
+      "DestinationFilePath": "I:\\Web\\config.js"
+    }
+  ]
+}

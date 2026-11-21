@@ -1,0 +1,80 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+      - uses: NuGet/setup-nuget@v2
+
+      - name: Install nanoFramework MSBuild components
+        shell: pwsh
+        run: |
+          $vsix = Join-Path $env:RUNNER_TEMP 'nanoframework.zip'
+          $directory = Join-Path $env:RUNNER_TEMP 'nanoframework-vsix'
+          Invoke-WebRequest -Uri 'https://github.com/nanoframework/nf-Visual-Studio-extension/releases/download/v2022.14.3.3/nanoFramework.Tools.VS2022.Extension.vsix' -OutFile $vsix
+          Expand-Archive -Path $vsix -DestinationPath $directory
+          $projectSystem = Join-Path $directory '$MSBuild\nanoFramework\v1.0'
+          if (-not (Test-Path (Join-Path $projectSystem 'NFProjectSystem.CSharp.targets'))) {
+            throw 'nanoFramework MSBuild components were not found in the VSIX.'
+          }
+          "NF_PROJECT_SYSTEM=$projectSystem\\" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Restore
+        run: nuget restore nanoSound.sln -NonInteractive
+
+      - name: Build
+        shell: pwsh
+        run: |
+          msbuild nanoSound.sln /t:Rebuild /p:Platform="Any CPU" /p:Configuration=Release "/p:NanoFrameworkProjectSystemPath=$env:NF_PROJECT_SYSTEM" /verbosity:minimal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          foreach ($file in @('nanoSound.bin', 'Web/index.html', 'Web/app.js', 'Web/config.js', 'Web/web-deploy.json')) {
+            if (-not (Test-Path (Join-Path 'nanoSound/bin/Release' $file) -PathType Leaf)) {
+              throw "Missing build output: $file"
+            }
+          }
+
+      - name: Upload application and web assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: nanoSound
+          path: |
+            nanoSound/bin/Release/nanoSound.bin
+            nanoSound/bin/Release/Web/
+          if-no-files-found: error
+
+  release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: windows-2022
+    permissions:
+      contents: write
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nanoSound
+          path: ${{ runner.temp }}/nanoSound-release
+
+      - name: Package release
+        shell: pwsh
+        run: Compress-Archive -Path "$env:RUNNER_TEMP/nanoSound-release/*" -DestinationPath nanoSound.zip
+
+      - name: Publish GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create $env:RELEASE_TAG nanoSound.zip --verify-tag --generate-notes
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

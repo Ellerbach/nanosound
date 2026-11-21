@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "nanoSound", "nanoSound\nanoSound.nfproj", "{A73429A0-D6DC-4F52-942C-F27B317B192A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A73429A0-D6DC-4F52-942C-F27B317B192A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A73429A0-D6DC-4F52-942C-F27B317B192A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A73429A0-D6DC-4F52-942C-F27B317B192A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A73429A0-D6DC-4F52-942C-F27B317B192A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A73429A0-D6DC-4F52-942C-F27B317B192A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A73429A0-D6DC-4F52-942C-F27B317B192A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

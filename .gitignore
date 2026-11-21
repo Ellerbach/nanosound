@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
+**/bin/
+**/obj/
+
+# Restored NuGet packages
+packages/
+**/packages/
+
+# Local execution logs
+*.execution.log
