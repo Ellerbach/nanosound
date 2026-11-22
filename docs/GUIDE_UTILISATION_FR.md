@@ -4,7 +4,7 @@ Ce guide décrit uniquement le fonctionnement et l'utilisation du logiciel
 nanoSound : démarrage, interface Web, configuration, stockage interne et
 diagnostic.
 
-![Hardware prototype](./docs/images/hardware-prototype.jpeg)
+![Hardware prototype](./images/hardware-prototype.jpeg)
 
 ## 1. Fonctionnement général
 
