@@ -19,6 +19,8 @@ the web interface, configuration transfer, persistence, and diagnostics.
 - 1 kOhm series resistor for the player's RX connection
 - USB data cable and a stable 5 V supply suitable for the player and speaker
 
+![Hardware prototype](./docs/images/hardware-prototype.jpeg)
+
 ## Player compatibility
 
 The project uses the official
