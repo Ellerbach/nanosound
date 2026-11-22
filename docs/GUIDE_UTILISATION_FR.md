@@ -217,10 +217,16 @@ vérifier que `$env:USERPROFILE\.dotnet\tools` figure dans `PATH`.
 
 ### Déployer l'artefact téléchargé
 
-Télécharger et extraire `nanoSound.zip` depuis la page GitHub **Releases** du
-dépôt. Le workflow publie une version lorsqu'un tag `v*` est envoyé. Dans
-PowerShell, se placer à la racine du
-dossier extrait, où se trouvent `nanoSound.bin` et le dossier `Web`. Fermer
+La page GitHub **Releases** du dépôt propose :
+
+- `nanoSound.zip` : l'application, les fichiers Web et le manifeste ;
+- `nanoSound-web.zip` : les fichiers Web et `Web/web-deploy.json` uniquement ;
+- `nanoSound.bin` : l'application et ses assemblages uniquement.
+
+Ces fichiers n'incluent pas le micrologiciel nanoFramework. Le workflow publie
+une version lorsqu'un tag `v*` est envoyé. Télécharger et extraire
+`nanoSound.zip`, puis se placer dans PowerShell à la racine du dossier extrait,
+où se trouvent `nanoSound.bin` et le dossier `Web`. Fermer
 Device Explorer ou tout autre programme utilisant le port série. Les exemples
 suivants utilisent la cible `ESP32_S3_QUAD` et le port `COM7` : les remplacer si
 nécessaire.
@@ -247,7 +253,8 @@ assemblages natifs de l'application.
 
 Dans les deux cas, attendre la fin du démarrage et du redémarrage automatique
 éventuel du point d'accès, puis déployer les fichiers Web avec le manifeste
-fourni :
+fourni. Pour une mise à jour des fichiers Web uniquement, extraire
+`nanoSound-web.zip` et exécuter la commande depuis sa racine :
 
 ```powershell
 nanoff deploy file .\Web\web-deploy.json serialport COM7
