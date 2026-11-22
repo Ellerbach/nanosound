@@ -31,7 +31,7 @@ jobs:
         with:
           ref: ${{ inputs.release_tag || github.ref }}
       - uses: microsoft/setup-msbuild@v3
-      - uses: NuGet/setup-nuget@v2
+      - uses: NuGet/setup-nuget@v4
 
       - name: Install nanoFramework MSBuild components
         shell: pwsh
