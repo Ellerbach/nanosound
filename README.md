@@ -172,9 +172,17 @@ assets.
 
 Download `nanoSound.zip` from the repository's GitHub Releases page and extract
 it. A push of a `v*` tag builds and publishes the release; regular builds also
-provide the `nanoSound` Actions artifact. The ZIP contains the managed
-`nanoSound.bin`, the web files, and `Web/web-deploy.json`. It does not contain
-the nanoFramework firmware.
+provide the `nanoSound` Actions artifact. Release downloads are:
+
+- `nanoSound.zip`: the managed binary, web files, and deployment manifest.
+- `nanoSound-web.zip`: the web files and `Web/web-deploy.json` only.
+- `nanoSound.bin`: the managed application and assemblies only.
+
+None of these files contains the nanoFramework firmware.
+
+To publish or replace the ZIP for an existing tag, run **Build** manually from
+the Actions tab and set `release_tag` to that tag. The workflow builds the tagged
+commit, not the branch selected in the Actions UI.
 
 ### Install .NET and nanoff
 
@@ -227,7 +235,8 @@ and any automatic AP-configuration restart before deploying the files.
 
 ### Deploy the web files
 
-From the extracted ZIP's root directory, upload the three files to `I:\Web`:
+From the root directory of either extracted ZIP, upload the three files to
+`I:\Web`:
 
 ```powershell
 nanoff deploy file .\Web\web-deploy.json serialport COM7
